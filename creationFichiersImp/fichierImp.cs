@@ -397,7 +397,7 @@ namespace creationFichiersImp
                                             }
                                             break;
 
-                                        // Champs numérique AGENCE égal à 4 caractères
+                                        // Champs numérique AGENCE égal à 4 caractères, dans le cas de GROUPE FRANCOIS HOLDING, complétion par le caractère underscore
                                         case "cli.agence":
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length < 4)
                                             {
