@@ -401,7 +401,7 @@ namespace creationFichiersImp
                                         case "cli.agence":
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length < 4)
                                             {
-                                                retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].PadRight(4, '0');
+                                                retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].PadRight(4, '_');
                                             }
                                             else if (lineCsv[int.Parse(positionCol[i, 1])].Length > 4)
                                             {
