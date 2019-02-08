@@ -243,7 +243,7 @@ namespace creationFichiersImp
                                 nbLigneFicCsv = ficAparser.GetLines().Count;
                                 for (int i = 0; i < nbLigneFicCsv; i++)
                                 {
-                                    retourCreation = ficImpAcreer.CreateFile(cheminMAJDonnees, ficAparser.GetHeader(), ficAparser.GetLines().ElementAt(i));
+                                    retourCreation = ficImpAcreer.CreateFile(cheminMAJDonnees, ficAparser.GetHeader(), ficAparser.GetLines().ElementAt(i), ficLog, monFicLog);
                                     if (retourCreation == "-1")
                                     {
                                         monFicLog.Log("Code client absent de l'en-tête du fichier CSV.", ficLog);
@@ -437,7 +437,7 @@ namespace creationFichiersImp
 
             //LOGS
             String repLog = monFicIni.ReadString("LOG", "Replog");
-            String ficLog = repLog + "log_" + DateTime.Now.ToString("yyMMdd_HHmmss") + ".txt";
+            String ficLog = repLog + "log_" + maintenant + ".txt";
 
             if (openFileDialogCSV.ShowDialog() == DialogResult.OK)
             {
@@ -500,10 +500,10 @@ namespace creationFichiersImp
                     // Exécution si pas d'exception
                     if (mesTests)
                     {
-                        // Exeécution de la requête
+                        // Exécution de la requête
                         retourRequetes = mesRequetes.ExecuteReader();
 
-                        // Remplissage du comboBox
+                        // Tant qu'il y a des données retournées par la requête
                         while (retourRequetes.Read())
                         {
                             cheminMAJDonnees = retourRequetes["param_val"].ToString();
@@ -513,13 +513,21 @@ namespace creationFichiersImp
 
                         // Fermeture de la connexion
                         retourRequetes.Close();
+                        monFicLog.Log("Données récupérées pour le traitement, fermeture de la connexion à la base de données.", ficLog);
 
+                        // Association des champs déclarés dans le fichier ini aux en-têtes présentent dans le fichier CSV 
+                        monFicLog.Log("Début de lecture du fichier *.ini pour l'association aux en-têtes présentent dans le fichier *.csv.", ficLog);
                         ficImpAcreer.CreateDico(monFicIni);
+                        monFicLog.Log("Fin de lecture du fichier *.ini pour l'association aux en-têtes présentent dans le fichier *.csv.", ficLog);
 
+                        // Combien de lignes à traiter
+                        monFicLog.Log("Traitement pour connaître le nombre de lignes à traiter.", ficLog);
                         nbLigneFicCsv = ficAparser.GetLines().Count;
+                        monFicLog.Log("Nombre de lignes à traiter = " + nbLigneFicCsv + ".", ficLog);
                         for (int i = 0;i<nbLigneFicCsv;i++)
                         {
-                            retourCreation = ficImpAcreer.CreateFile(cheminMAJDonnees, ficAparser.GetHeader(), ficAparser.GetLines().ElementAt(i));
+                            retourCreation = ficImpAcreer.CreateFile(cheminMAJDonnees, ficAparser.GetHeader(), ficAparser.GetLines().ElementAt(i), ficLog, monFicLog);
+                            monFicLog.Log("Traitement de la ligne " + i + " terminé.", ficLog);
                             if (retourCreation == "-1")
                             {
                                 monFicLog.Log("Code client absent de l'en-tête du fichier CSV.", ficLog);

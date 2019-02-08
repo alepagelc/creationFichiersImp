@@ -7,7 +7,7 @@ using System.IO;
 
 namespace creationFichiersImp
 {
-    class logApp
+    public class logApp
     {
         public void DumpLog(StreamReader r)
         {

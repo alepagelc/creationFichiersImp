@@ -51,7 +51,7 @@ namespace creationFichiersImp
         /// <param name="lineCsv"></param>
         /// <returns></returns>
         /// 
-        public string CreateFile (string RepImp, string[] colCsv, string[] lineCsv)
+        public string CreateFile (string RepImp, string[] colCsv, string[] lineCsv, string trace, logApp passageFicLog)
         {
             string retour = null;
             string[,] positionCol = new string[dicoD.Count, 2];
@@ -63,13 +63,16 @@ namespace creationFichiersImp
             string FicImp = null;
             IFormatProvider culture = new CultureInfo("fr-FR", true);
 
+            
             // On regarde si le dictionnaire contient bien la valeur référence au code client, obligatoire pour constituer le nom du fichier
             if (dicoD.ContainsValue("cli.code"))
             {
+                passageFicLog.Log("Présence du code client = OK", trace);
                 // Pour chaque paire de valeur trouvée dans le dictionnaire (clé, valeur) on réalise le traitement
                 foreach (KeyValuePair<string, string> kvp in dicoD)
                 {
                     // Si la valeur correspond justement au code client, au nom ou au prénom, on relève sa position dans le tableau des en-têtes de colonne, ce qui sera utile pour la création du nom du fichier
+                    passageFicLog.Log("Traitement du de l'information " + kvp.Value + ".", trace);
                     switch (kvp.Value)
                     {
                         case "cli.code":
@@ -124,7 +127,9 @@ namespace creationFichiersImp
                     // Puis on créé un tableau avec les valeurs du dictionnaire et la position des clés dans le tableau d'en-tête du fichier CSV
                     if (i==0)
                     {
+                        passageFicLog.Log("Tableau des positions d'en-têtes ligne " + i + " colonne 1  = " + kvp.Value + ".", trace);
                         positionCol[i, 0] = kvp.Value;
+                        passageFicLog.Log("Tableau des positions d'en-têtes ligne " + i + " colonne 2  = " + Array.IndexOf(colCsv, kvp.Key).ToString() + ".", trace);
                         positionCol[i, 1] = Array.IndexOf(colCsv, kvp.Key).ToString();
                     }
                     else
@@ -201,6 +206,9 @@ namespace creationFichiersImp
                                 if ((int.Parse(positionCol[i, 1]) != -1) && (positionCol[i, 1] != null) && (lineCsv[int.Parse(positionCol[i, 1])] != ""))
                                 {
                                     bool monTest = true;
+
+                                    passageFicLog.Log("Traitement pour l'écriture de l'information " + positionCol[i, 0] + ".", trace);
+
                                     switch (positionCol[i, 0])
                                     {
                                         // Champ obligatoire NOM
@@ -399,16 +407,24 @@ namespace creationFichiersImp
 
                                         // Champs numérique AGENCE égal à 4 caractères, dans le cas de GROUPE FRANCOIS HOLDING, complétion par le caractère underscore
                                         case "cli.agence":
+                                            passageFicLog.Log("TEST", trace);
+                                            passageFicLog.Log("i = " + i + ".", trace);
+                                            passageFicLog.Log("Code agence en colonne = " + positionCol[i, 1] + ".", trace);
+                                            passageFicLog.Log("Code agence = " + lineCsv[int.Parse(positionCol[i, 1])] + ".", trace);
+                                            passageFicLog.Log("Longueur du code agence = "+ lineCsv[int.Parse(positionCol[i, 1])].Length + ".", trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length < 4)
                                             {
+                                                passageFicLog.Log("Longueur du code agence < 4", trace);
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].PadRight(4, '_');
                                             }
                                             else if (lineCsv[int.Parse(positionCol[i, 1])].Length > 4)
                                             {
+                                                passageFicLog.Log("Longueur du code agence > 4", trace);
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].Substring(0, 4);
                                             }
                                             else
                                             {
+                                                passageFicLog.Log("Longueur du code agence = 4", trace);
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])];
                                             }
                                             break;
@@ -568,6 +584,7 @@ namespace creationFichiersImp
             }
             else
             {
+                passageFicLog.Log("Présence du code client = KO", trace);
                 retour = "Code client absent du dictionnaire, variable cli.code.";
             }
 
