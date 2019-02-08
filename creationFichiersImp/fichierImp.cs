@@ -78,6 +78,7 @@ namespace creationFichiersImp
                         case "cli.code":
                             // Si la position du code client est encore initialisé à -1, c'est la première valeur du dictionnaire à rechercher, sinon on vérifie si la position précédente
                             // rapporte une valeur. Si ce n'est pas le cas, on récupère la position de ce nouvel élément.
+                            passageFicLog.Log("Recherche de la position du champ associé au code client dans le fichier CSV.", trace);
                             if (positionCodeCli == -1)
                             {
                                 positionCodeCli = Array.IndexOf(colCsv, kvp.Key);
@@ -89,10 +90,12 @@ namespace creationFichiersImp
                                     positionCodeCli = Array.IndexOf(colCsv, kvp.Key);
                                 }
                             }
+                            passageFicLog.Log("Code client en colonne " + positionCodeCli, trace);
                             break;
                         case "cli.nom":
                             // Si la position du nom du client est encore initialisé à -1, c'est la première valeur du dictionnaire à rechercher, sinon on vérifie si la position précédente
                             // rapporte une valeur. Si ce n'est pas le cas, on récupère la position de ce nouvel élément.
+                            passageFicLog.Log("Recherche de la position du champ associé au nom du client dans le fichier CSV.", trace);
                             if (positionNomCli == -1)
                             {
                                 positionNomCli = Array.IndexOf(colCsv, kvp.Key);
@@ -104,10 +107,12 @@ namespace creationFichiersImp
                                     positionNomCli = Array.IndexOf(colCsv, kvp.Key);
                                 }
                             }
+                            passageFicLog.Log("Nom du client en colonne " + positionNomCli, trace);
                             break;
                         case "cli.prenom":
                             // Si la position du prénom du client est encore initialisé à -1, c'est la première valeur du dictionnaire à rechercher, sinon on vérifie si la position précédente
                             // rapporte une valeur. Si ce n'est pas le cas, on récupère la position de ce nouvel élément.
+                            passageFicLog.Log("Recherche de la position du champ associé au prénom du client dans le fichier CSV.", trace);
                             if (positionPrenomCli == -1)
                             {
                                 positionPrenomCli = Array.IndexOf(colCsv, kvp.Key);
@@ -119,6 +124,7 @@ namespace creationFichiersImp
                                     positionPrenomCli = Array.IndexOf(colCsv, kvp.Key);
                                 }
                             }
+                            passageFicLog.Log("Prénom du client en colonne " + positionNomCli, trace);
                             break;
                         default:
                             break;
@@ -127,6 +133,7 @@ namespace creationFichiersImp
                     // Puis on créé un tableau avec les valeurs du dictionnaire et la position des clés dans le tableau d'en-tête du fichier CSV
                     if (i==0)
                     {
+                        passageFicLog.Log("Traitement de l'en-tête en 1ère ligne du fichier CSV.", trace);
                         passageFicLog.Log("Tableau des positions d'en-têtes ligne " + i + " colonne 1  = " + kvp.Value + ".", trace);
                         positionCol[i, 0] = kvp.Value;
                         passageFicLog.Log("Tableau des positions d'en-têtes ligne " + i + " colonne 2  = " + Array.IndexOf(colCsv, kvp.Key).ToString() + ".", trace);
@@ -134,24 +141,30 @@ namespace creationFichiersImp
                     }
                     else
                     {
+                        passageFicLog.Log("Traitement des autres lignes constituant le fichier CSV. ", trace);
                         for (int j = 0; j<i; j++)
                         {
                             if (positionCol[j,0] == kvp.Value)
                             {
+                                passageFicLog.Log("Valeur de l'élément du dictionnaire " + positionCol[j, 0] + "bien égale à valeur de de l'élément " + kvp.Value + " dans la liste", trace);
                                 if (positionCol[j,1] != "-1")
                                 {
+                                    passageFicLog.Log("La position de l'élément de l'élément existe dans le dictionnaire.", trace);
                                     if (lineCsv[int.Parse(positionCol[j, 1])] == "")
                                     {
                                         position = j;
+                                        passageFicLog.Log("Sa position est égale à " + position + " dans le fichier CSV", trace);
                                     }
                                     else
                                     {
                                         position = -1;
+                                        passageFicLog.Log("L'élément n'est pas présent dans le fichier CSV", trace);
                                     }
                                 }
                                 else
                                 {
                                     position = -1;
+                                    passageFicLog.Log("L'élément n'est pas présent dans le fichier CSV (2)", trace);
                                 }
                             }
                         }
@@ -159,20 +172,32 @@ namespace creationFichiersImp
                         switch (position)
                         {
                             case 0:
+                                passageFicLog.Log("Position bien égale à 0.", trace);
                                 positionCol[i, 0] = kvp.Value;
+                                passageFicLog.Log("Enregistrement dans le tableau des positions de colonnes - lig " + i + " col 0 = " + kvp.Value, trace);
                                 positionCol[i, 1] = Array.IndexOf(colCsv, kvp.Key).ToString();
+                                passageFicLog.Log("Enregistrement dans le tableau des positions de colonnes - lig " + i + " col 1 = " + Array.IndexOf(colCsv, kvp.Key).ToString(), trace);
                                 break;
                             case -1:
+                                passageFicLog.Log("Position bien égale à -1.", trace);
                                 positionCol[i, 0] = "-1";
+                                passageFicLog.Log("Enregistrement dans le tableau des positions de colonnes - lig " + i + " col 0 = -1", trace);
                                 positionCol[i, 1] = "-1";
+                                passageFicLog.Log("Enregistrement dans le tableau des positions de colonnes - lig " + i + " col 1 = -1", trace);
                                 position = 0;
+                                passageFicLog.Log("Passage de la position à 0", trace);
                                 break;
                             default:
                                 positionCol[position, 0] = "-1";
+                                passageFicLog.Log("Enregistrement par défaut dans le tableau des positions de colonnes - lig " + position + " col 0 = -1", trace);
                                 positionCol[position, 1] = "-1";
+                                passageFicLog.Log("Enregistrement par défaut dans le tableau des positions de colonnes - lig " + position + " col 1 = -1", trace);
                                 positionCol[i, 0] = kvp.Value;
+                                passageFicLog.Log("Enregistrement par défaut dans le tableau des positions de colonnes - lig " + i + " col 0 = " + kvp.Value, trace);
                                 positionCol[i, 1] = Array.IndexOf(colCsv, kvp.Key).ToString();
+                                passageFicLog.Log("Enregistrement par défaut dans le tableau des positions de colonnes - lig " + i + " col 0 = " + Array.IndexOf(colCsv, kvp.Key).ToString(), trace);
                                 position = 0;
+                                passageFicLog.Log("Passage de la position à 0", trace);
                                 break;
                         }
                     }
@@ -183,36 +208,45 @@ namespace creationFichiersImp
                 // Si la clé correspondant à la valeur du code client est absente, on retourne un message
                 if (positionCodeCli == -1)
                 {
+                    passageFicLog.Log("Le code client n'a pas été référencé dans le fichier CSV.", trace);
                     retour = "-1";
                 }
                 else
                 {
+                    passageFicLog.Log("Le code client est bien référencé dans le fichier CSV.", trace);
                     // Si la clé est bien présente, on créé le fichier .imp
                     if (lineCsv[positionCodeCli].Trim() != null)
                     {
+                        passageFicLog.Log("Après suppression des espaces en début et fin du code client trouvé dans le fichier CSV, la valeur restante n'est pas nulle, on utilise la valeur trouvée pour créer le nom du fichier IMP.", trace);
                         FicImp = RepImp + "\\IMP" + "\\C_" + lineCsv[positionCodeCli] + ".imp";
+                        passageFicLog.Log("Le fichier qui va être créé est nommé " + lineCsv[positionCodeCli] + ".imp", trace);
 
                         i = 0;
 
                         if (File.Exists(FicImp))
                         {
+                            passageFicLog.Log("Le fichier " + lineCsv[positionCodeCli] + ".imp existe déjà, on le remplace.", trace);
                             File.Delete(FicImp);
                         }
 
                         using (StreamWriter sw = File.AppendText(FicImp))
                         {
+                            passageFicLog.Log("Nombre d'éléments devant être traité d'après le dictionnaire = " + dicoD.Count, trace);
                             for (i = 0; i < dicoD.Count; i++)
                             {
+                                passageFicLog.Log("Traitement et écriture de l'élément " + i, trace);
                                 if ((int.Parse(positionCol[i, 1]) != -1) && (positionCol[i, 1] != null) && (lineCsv[int.Parse(positionCol[i, 1])] != ""))
                                 {
+                                    passageFicLog.Log("La position de l'élément existge bien, n'est pas nulle et l'élément de la ligne du fichier CSV non plus, position traitée de l'élément = " + positionCol[i, 1], trace);
                                     bool monTest = true;
 
-                                    passageFicLog.Log("Traitement pour l'écriture de l'information " + positionCol[i, 0] + ".", trace);
+                                    passageFicLog.Log("Traitement pour l'écriture de l'information " + positionCol[i, 0] + " dans le fichier IMP.", trace);
 
                                     switch (positionCol[i, 0])
                                     {
                                         // Champ obligatoire NOM
                                         case "cli.nom":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length == 0)
                                             {
                                                 retour = "Erreur : Nom absent pour la fiche client n°" + lineCsv[positionCodeCli];
@@ -229,6 +263,7 @@ namespace creationFichiersImp
 
                                         // Champs limités à plus de 100 caractères
                                         case "cli.obs":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length > 30000)
                                             {
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].Substring(0, 30000);
@@ -270,6 +305,7 @@ namespace creationFichiersImp
                                         case "cli.com1":
                                         case "cli.com2":
                                         case "cli.syncid":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length > 50)
                                             {
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].Substring(0, 50);
@@ -282,6 +318,7 @@ namespace creationFichiersImp
 
                                         // Champs limités à 35 caractères
                                         case "cli.coderum":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length > 35)
                                             {
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].Substring(0, 35);
@@ -294,6 +331,7 @@ namespace creationFichiersImp
 
                                         // Champs limités à 30 caractères
                                         case "cli.bic":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length > 30)
                                             {
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].Substring(0, 30);
@@ -312,6 +350,7 @@ namespace creationFichiersImp
                                         case "cli.siret":
                                         case "cli.juridique":
                                         case "cli.codetva":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length > 20)
                                             {
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].Substring(0, 20);
@@ -324,6 +363,7 @@ namespace creationFichiersImp
 
                                         // Champ limité à 15 caractères
                                         case "cli.code":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length == 0)
                                             {
                                                 retour = "Erreur : code client absent pour le client " + lineCsv[positionNomCli] + " " + lineCsv[positionPrenomCli];
@@ -343,6 +383,7 @@ namespace creationFichiersImp
                                         case "cli.ape":
                                         case "cli.regcode":
                                         case "cli.pflcode":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length > 10)
                                             {
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].Substring(0, 10);
@@ -355,6 +396,7 @@ namespace creationFichiersImp
 
                                         // Champs du type du fournisseur
                                         case "cli.typefrn":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])] != "PREST")
                                             {
                                                 retour = "Erreur : Type fournisseur = PREST ou vide pour la fiche fournisseur n°" + lineCsv[positionCodeCli];
@@ -367,6 +409,7 @@ namespace creationFichiersImp
 
                                         // Champs de date
                                         case "cli.dtcree":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             monTest = true;
                                             try
                                             {
@@ -386,6 +429,7 @@ namespace creationFichiersImp
                                             }
                                             break;
                                         case "cli.daterum":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             monTest = true;
                                             try
                                             {
@@ -407,6 +451,7 @@ namespace creationFichiersImp
 
                                         // Champs numérique AGENCE égal à 4 caractères, dans le cas de GROUPE FRANCOIS HOLDING, complétion par le caractère underscore
                                         case "cli.agence":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             passageFicLog.Log("TEST", trace);
                                             passageFicLog.Log("i = " + i + ".", trace);
                                             passageFicLog.Log("Code agence en colonne = " + positionCol[i, 1] + ".", trace);
@@ -431,6 +476,7 @@ namespace creationFichiersImp
 
                                         // Champs numérique SOCIETE égal à 3 caractères
                                         case "cli.societe":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (lineCsv[int.Parse(positionCol[i, 1])].Length < 3)
                                             {
                                                 retour = positionCol[i, 0] + "=" + lineCsv[int.Parse(positionCol[i, 1])].PadRight(3, '0');
@@ -447,6 +493,7 @@ namespace creationFichiersImp
 
                                         // Champs numériques
                                         case "cli.numtaxedefaut":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if ((lineCsv[int.Parse(positionCol[i, 1])] != "1") || (lineCsv[int.Parse(positionCol[i, 1])] != "2") || (lineCsv[int.Parse(positionCol[i, 1])] != "3") || (lineCsv[int.Parse(positionCol[i, 1])] != "4"))
                                             {
                                                 retour = "Erreur : le N° de taxe par défaut doit être compris entre 1 et 4 pour la fiche client n°" + lineCsv[positionCodeCli];
@@ -457,6 +504,7 @@ namespace creationFichiersImp
                                             }
                                             break;
                                         case "cli.codelock":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if ((lineCsv[int.Parse(positionCol[i, 1])] != "0") || (lineCsv[int.Parse(positionCol[i, 1])] != "1"))
                                             {
                                                 retour = "Erreur : le code de blocage du code client doit être égal à 0 (non vérouillé) ou 1 (vérouillé) pour la fiche client n°" + lineCsv[positionCodeCli];
@@ -467,6 +515,7 @@ namespace creationFichiersImp
                                             }
                                             break;
                                         case "cli.typecode":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if ((lineCsv[int.Parse(positionCol[i, 1])] != "1") || (lineCsv[int.Parse(positionCol[i, 1])] != "2") || (lineCsv[int.Parse(positionCol[i, 1])] != "3"))
                                             {
                                                 retour = "Erreur : le code du type client doit être égal à 1 (simple adresse) ou 2 (prospect) ou 3 (client) pour la fiche client n°" + lineCsv[positionCodeCli];
@@ -509,6 +558,7 @@ namespace creationFichiersImp
                                         case "cli.valrem18":
                                         case "cli.valrem19":
                                         case "cli.valrem20":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (int.Parse(lineCsv[int.Parse(positionCol[i, 1])]) > 100)
                                             {
                                                 retour = "Erreur : l'une des valeurs de remise du client est supérieure à 100 pour la fiche client n°" + lineCsv[positionCodeCli];
@@ -541,6 +591,7 @@ namespace creationFichiersImp
                                         case "cli.valceof18":
                                         case "cli.valceof19":
                                         case "cli.valceof20":
+                                            passageFicLog.Log("Traitement du cas où l'élément correspond à " + positionCol[i, 0], trace);
                                             if (int.Parse(lineCsv[int.Parse(positionCol[i, 1])]) > 100)
                                             {
                                                 retour = "Erreur : l'une des valeurs de remise du client est supérieure à 100 pour la fiche client n°" + lineCsv[positionCodeCli];
@@ -560,8 +611,10 @@ namespace creationFichiersImp
                                     switch (retour.Substring(0, 9))
                                     {
                                         case "Erreur : ":
+                                            passageFicLog.Log("La valeur trouvée dans le ligne traitée du fichier CSV contient une erreur", trace);
                                             break;
                                         default:
+                                            passageFicLog.Log("Ecriture de " + retour + " dans le fichier " + lineCsv[positionCodeCli] + ".imp", trace);
                                             sw.WriteLine(retour);
                                             break;
                                     }
